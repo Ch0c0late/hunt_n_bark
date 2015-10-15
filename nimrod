@@ -42,7 +42,7 @@ def nimrod
     
     files   = (entries - dirs).select { |file| (File.extname file).delete(".") == extension }
 
-    files.map { |source_code| bark source_code }
+    files.map { |source_code| bark source_code.to_s }
     
     return if [] == directory_store.directories
     

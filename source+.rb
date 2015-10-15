@@ -11,9 +11,10 @@ def bark input
   filename  = File.basename input
   directory = File.dirname  input
   
-  output = File.open(directory + "/" + filename, "w")
-
-  File.open(input, "r").each_line do |line|
+  output    = File.open(directory + "/" +  "_" + filename, "w")
+  temp      = File.open input, "r"
+  
+  temp.each_line do |line|
     if /^[-|+]/ =~ line
       if line.include? "{"
         output.write(line)
@@ -21,7 +22,7 @@ def bark input
       else
         output.write(line)
 
-        lookahead = input.readline
+        lookahead = temp.readline
 
         if lookahead.include? "{"
           output.write(lookahead)
@@ -29,7 +30,7 @@ def bark input
         else
           while !lookahead.include? "{"
             output.write(lookahead)
-            lookahead = input.readline
+            lookahead = temp.readline
           end
 
           output.write(lookahead)
@@ -40,6 +41,9 @@ def bark input
       output.write(line)
     end
   end
+
+  File.delete input
+  File.rename(output.path, "#{directory}/#{filename}")
 
   puts "#{File.basename output} generated, located at #{File.dirname output}"
 end
